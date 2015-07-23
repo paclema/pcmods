@@ -47,7 +47,8 @@ void setup()
   Serial.println("STRIP_COLOR:255,255,255;");
   Serial.println("RAINBOW:ms_delay;");
   Serial.println("SERVO:180;");
-  Serial.println("SERVO_WAVE");
+  Serial.println("SERVO_WAVE:4");
+  Serial.println("---- No more for now! ----");
 
 
 
@@ -65,9 +66,6 @@ void loop()
         }
         else command += c;
     }
-
-      //for(int i=0; i<NUMBER_OF_SERVOS; i++) servo[i].write(servo_pos[i]);
-
 }
 
 void parseCommand(String com)
@@ -80,31 +78,20 @@ void parseCommand(String com)
 
   if(part1.equalsIgnoreCase("STRIP_COLOR"))
   {
-    //Serial.print("HAND recognized: ");
-
     //-- STRIP_COLOR:255,255,255;
 
     for(int i=0; i<3; i++){
 
       strip_Color[i] = getValuesFromCommand(part2);
-      //Serial.print(strip_Color[i]);
-      //Serial.print("\t");
     }
-
-      //Serial.println("_");
-
-    // Move actuators of HAND:
-    //for(int i=0; i<HAND_VALUES; i++) servo[i].write(servo_pos[i]);
 
     //Print colorwipe:
     colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0); // Blue
-
 
   }
 
   else if(part1.equalsIgnoreCase("RAINBOW"))
   {
-    
     //-- RAINBOW:ms_delay;
 
     rainbow(getValuesFromCommand(part2));
@@ -120,7 +107,7 @@ void parseCommand(String com)
   }
   else if(part1.equalsIgnoreCase("SERVO_WAVE"))
   {
-    //-- SERVO:180;
+    //-- SERVO_WAVE:4;
 
     int waves = getValuesFromCommand(part2);
 
@@ -149,7 +136,7 @@ int getValuesFromCommand (String& command_values){
   return value;
 }
 
-//------------------------ Strips functions:
+//------------------------ Strip functions:
 
 
 // Fill the dots one after the other with a color
