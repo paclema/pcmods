@@ -1,4 +1,4 @@
-//#include <Servo.h>
+#include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
   #include <avr/power.h>
@@ -20,12 +20,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(52, PIN, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
-/*-- Example of commmands:
-    HAND:125,56,44,144,153;
-    Values from 0 to 180
-*/
-
-//Servo servo[NUMBER_OF_SERVOS];
+Servo servo_flag;
 
 String command;
 
@@ -33,34 +28,28 @@ int strip_Color[3];
 
 void setup()
 {
-  //-- Attach the servos. Order for right hand, counting from the thumb to the little finger.
-  //-- Servos are connected from digital pin #6 to #10. Servo for wrist is connected at #11 digital pin.
-  
-  //-- Servo setup
-  //for (int i=0; i<NUMBER_OF_SERVOS; i++) servo[i].attach(i+6);
-
-  //-- Servo inti position:
-  /*for (int i=0; i<NUMBER_OF_SERVOS; i++){
-    servo_pos[i]=90;
-    servo[i].write(servo_pos[i]);
-    } 
-*/
-  Serial.begin(19200);
+  servo_flag.attach(5);
+ 
   
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
   #if defined (__AVR_ATtiny85__)
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
   #endif
   // End of trinket special code
-
-
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
-    Serial.println("---- Wellcome to control board ----");
-    Serial.println("Available commands:");
-    Serial.println("STRIP_COLOR:255,255,255;");
-    Serial.println("RAINBOW:ms_delay;");
+
+  Serial.begin(19200);
+
+  Serial.println("---- Wellcome to control board ----");
+  Serial.println("Available commands:");
+  Serial.println("STRIP_COLOR:255,255,255;");
+  Serial.println("RAINBOW:ms_delay;");
+  Serial.println("SERVO:180;");
+  Serial.println("SERVO_WAVE");
+
+
 
 }
 
@@ -115,23 +104,34 @@ void parseCommand(String com)
 
   else if(part1.equalsIgnoreCase("RAINBOW"))
   {
-    /*
-    RAINBOW:ms_delay;
+    
+    //-- RAINBOW:ms_delay;
 
-      int fingerIndex = getValuesFromCommand(part2);
-      servo_pos[fingerIndex] = getValuesFromCommand(part2);
-      // Move the finguer #fingerIndex:
-      servo[fingerIndex].write(servo_pos[fingerIndex]);
-      */
-      rainbow(getValuesFromCommand(part2));
+    rainbow(getValuesFromCommand(part2));
 
 
   }
-  else if(part1.equalsIgnoreCase("WRIST"))
+  else if(part1.equalsIgnoreCase("SERVO"))
   {
-    /*servo_pos[5] = getValuesFromCommand(part2);
-    servo[5].write(servo_pos[5]);    
-    */
+    //-- SERVO:180;
+
+    servo_flag.write(getValuesFromCommand(part2));
+
+  }
+  else if(part1.equalsIgnoreCase("SERVO_WAVE"))
+  {
+    //-- SERVO:180;
+
+    int waves = getValuesFromCommand(part2);
+
+    for(int i=0; i< waves ; i++){
+
+      servo_flag.write(0);
+      delay(600);
+      servo_flag.write(180);
+      delay(600);
+
+    }
 
   }
   else
