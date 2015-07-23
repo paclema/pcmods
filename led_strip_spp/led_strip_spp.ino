@@ -29,6 +29,7 @@ int strip_Color[3];
 void setup()
 {
   servo_flag.attach(5);
+  servo_flag.write(90);
  
   
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -37,7 +38,10 @@ void setup()
   #endif
   // End of trinket special code
   strip.begin();
+
   strip.show(); // Initialize all pixels to 'off'
+
+  
 
 
   Serial.begin(19200);
@@ -49,8 +53,6 @@ void setup()
   Serial.println("SERVO:180;");
   Serial.println("SERVO_WAVE:4");
   Serial.println("---- No more for now! ----");
-
-
 
 }
 
@@ -86,7 +88,7 @@ void parseCommand(String com)
     }
 
     //Print colorwipe:
-    colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0); // Blue
+    colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0, true); // Blue
 
   }
 
@@ -110,15 +112,21 @@ void parseCommand(String com)
     //-- SERVO_WAVE:4;
 
     int waves = getValuesFromCommand(part2);
+    strip.Color(255, 255, 255);
 
     for(int i=0; i< waves ; i++){
 
       servo_flag.write(0);
-      delay(600);
+      colorWipe(strip.Color(0, 255, 0), 12, false); // Green
+      //delay(80);
       servo_flag.write(180);
-      delay(600);
+      colorWipe(strip.Color(255, 0, 0), 12, true); // Red
+      //delay(80);
 
     }
+
+    colorWipe(strip.Color(255, 255, 255), 0, true); // White
+    servo_flag.write(90);
 
   }
   else
@@ -140,9 +148,11 @@ int getValuesFromCommand (String& command_values){
 
 
 // Fill the dots one after the other with a color
-void colorWipe(uint32_t c, uint8_t wait) {
-  for(uint16_t i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
+void colorWipe(uint32_t c, uint8_t wait, bool dir) {
+  int n_pixels = strip.numPixels();
+  for(uint16_t i=0; i<n_pixels; i++) {
+     if(dir == true)  strip.setPixelColor(i, c);
+     else strip.setPixelColor(n_pixels-(i+1), c);
     strip.show();
     delay(wait);
   }
