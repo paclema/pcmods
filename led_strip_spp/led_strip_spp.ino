@@ -21,6 +21,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(52, PIN, NEO_GRB + NEO_KHZ800);
 // on a live circuit...if you must, connect GND first.
 
 Servo servo_flag;
+int rainbow_delay = 20;
+bool rainbow_mode = false;
 
 String command;
 
@@ -68,6 +70,12 @@ void loop()
         }
         else command += c;
     }
+
+    if(rainbow_mode){
+      servo_flag.detach();
+      rainbow(rainbow_delay);
+      servo_flag.attach(5);
+    }
 }
 
 void parseCommand(String com)
@@ -81,6 +89,8 @@ void parseCommand(String com)
   if(part1.equalsIgnoreCase("STRIP_COLOR"))
   {
     //-- STRIP_COLOR:255,255,255;
+
+    rainbow_mode = false;
 
     for(int i=0; i<3; i++){
 
@@ -96,7 +106,8 @@ void parseCommand(String com)
   {
     //-- RAINBOW:ms_delay;
 
-    rainbow(getValuesFromCommand(part2));
+    rainbow_delay = getValuesFromCommand(part2);
+    rainbow_mode = true;
 
 
   }
@@ -111,8 +122,11 @@ void parseCommand(String com)
   {
     //-- SERVO_WAVE:4;
 
+    rainbow_mode = false;
+
     int waves = getValuesFromCommand(part2);
     strip.Color(255, 255, 255);
+    colorWipe(strip.Color(255, 255, 255), 0, true); // White
 
     for(int i=0; i< waves ; i++){
 
