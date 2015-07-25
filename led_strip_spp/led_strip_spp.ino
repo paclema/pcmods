@@ -34,7 +34,7 @@ void setup()
   servo_flag.write(90);
  
   
-  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
+  // This is for Trinket 5V 16MHz, you can remove these three lines ifeyou are not using a Trinket
   #if defined (__AVR_ATtiny85__)
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
   #endif
@@ -77,6 +77,8 @@ void loop()
       rainbow(rainbow_delay);
       servo_flag.attach(5);
     }
+
+    //fire();
 }
 
 void parseCommand(String com)
@@ -268,4 +270,26 @@ void random_pixels(uint8_t wait) {
     strip.show();
     delay(wait);
   }
+}
+
+void fire (void){
+
+  int r = 255;
+  int g = r-100;
+  int b = 40;
+
+  for(int x = 8; x <99; x++)
+  {
+    int flicker = random(0,150);
+    int r1 = r-flicker;
+    int g1 = g-flicker;
+    int b1 = b-flicker;
+    if(g1<0) g1=0;
+    if(r1<0) r1=0;
+    if(b1<0) b1=0;
+    strip.setPixelColor(x,r1,g1, b1);
+  }
+  strip.show();
+  delay(random(50,150));
+
 }
