@@ -109,6 +109,14 @@ void parseCommand(String com)
     rainbow_delay = getValuesFromCommand(part2);
     rainbow_mode = true;
 
+  }
+  else if(part1.equalsIgnoreCase("RANDOM"))
+  {
+    //-- RANDOM:ms_delay;
+
+    rainbow_mode = false;
+    random_pixels(getValuesFromCommand(part2));
+
 
   }
   else if(part1.equalsIgnoreCase("SERVO"))
@@ -246,4 +254,17 @@ uint32_t Wheel(byte WheelPos) {
   }
   WheelPos -= 170;
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+
+void random_pixels(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256; j++) {
+    for(i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, random(0, 128), random(0, 128), random(0, 128));
+    }
+    strip.show();
+    delay(wait);
+  }
 }
