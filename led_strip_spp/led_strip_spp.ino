@@ -193,6 +193,7 @@ void rainbow(uint8_t wait) {
     strip.show();
     delay(wait);
   }
+  rainbow_mode = false;
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout
