@@ -54,6 +54,7 @@ void setup()
   Serial.println("RAINBOW:ms_delay;");
   Serial.println("SERVO:180;");
   Serial.println("SERVO_WAVE:4");
+  Serial.println("RANDOM:ms_delay;");
   Serial.println("---- No more for now! ----");
 
 }
