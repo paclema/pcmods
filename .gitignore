@@ -1,0 +1,5 @@
+*.pyc
+.idea
+telegram_bot/log.txt
+telegram_bot/id
+telegram_bot/config
