@@ -12,6 +12,10 @@ from twx.botapi import TelegramBot, ReplyKeyboardMarkup
 
 from SerialInterface import SerialInterface
 
+import platform
+
+arduino = None
+
 __author__ = 'def'
 
 ### Basic bot things ####################################
@@ -66,7 +70,11 @@ def main():
 
     # Connect to hardware
     interface = SerialInterface()
-    interface.connect('COM5', 19200)
+
+    if platform.system() == 'Windows' : 
+        interface.connect('COM5', 19200)
+    else:
+        interface.connect('/dev/ttyUSB0', 19200)        
 
     # Send special keyboard:
     send_keyboard(bot, user_id)
@@ -76,7 +84,7 @@ def main():
     while True:
         try:
             updates = bot.get_updates(offset=last_id).wait()
-            print updates
+            print updates[0].message.sender
             print "-------------------------------"
 
             for update in updates:
@@ -103,12 +111,16 @@ def main():
                                 send_keyboard(bot, chat_id)
                             elif word == '/flag':
                                 interface.sendFlagWave(1)
+                                if updates[0].message.sender == 'None' :
+                                    bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.first_name + "!")
+                                else:
+                                    bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.username + "!")
                                 break
                             elif word == '/rainbow':
                                 interface.sendRainbow()
                                 break
                             else:
-                                #bot.send_message(chat_id, "Bad syntax!")
+                                bot.send_message(chat_id, "Bad syntax!")
                                 break
 
                             # Restricted API
