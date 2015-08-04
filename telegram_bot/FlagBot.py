@@ -132,8 +132,7 @@ def main():
                         words = text.split()
 
                         for i, word in enumerate(words):
-                            # Process commands:
-                            print                            
+                            # Process commands:                     
                             if word == '/start':
                                 print "New user started the app: " + str(user)
                                 send_keyboard(bot, chat_id)
@@ -161,7 +160,7 @@ def main():
                                 bot.send_photo(chat_id, photo=f)
 
                                 cam.stop()
-                                print "Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
+                                print "[" + t.strftime("%c") + "]" + " Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
 
                                 break
                             else:
