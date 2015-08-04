@@ -144,12 +144,14 @@ def main():
                                 break
                             elif word == '/foto':
                                 #interface.sendFlagWave(1)
-                                t.sleep(2) #1 sec for posing
+                                interface.sendStrip(0,0,0)
+                                #t.sleep(2) #1 sec for posing
                                 cam.start()
                                 bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
                                 img = cam.get_image()
                                 pygame.image.save(img,"./snap_photo.jpg")
                                 pygame.mixer.music.load("./camera_shutter.mp3")
+                                interface.sendStrip(255,255,255)
                                 pygame.mixer.music.play()
 
                                 fp = open('snap_photo.jpg', 'rb')
@@ -161,6 +163,8 @@ def main():
 
                                 cam.stop()
                                 print "[" + t.strftime("%c") + "]" + " Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
+                                t.sleep(0.3)
+                                interface.sendStrip(0,0,0)
 
                                 break
                             else:

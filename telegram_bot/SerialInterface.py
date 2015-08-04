@@ -57,6 +57,17 @@ class SerialInterface:
         except AttributeError, e:
             print 'Not connected: [' + str(e) + ']'
 
+    def sendStrip(self, r=0, g=0, b=0):
+        """
+        Sends the command turn lights as STRIP_COLOR:255,255,255; 
+        """
+        command = "STRIP_COLOR:%d,%d,%d;\n" % (r,g,b)
+
+        try:
+            self.serialPort.write(command)
+        except AttributeError, e:
+            print 'Not connected: [' + str(e) + ']'
+
 # If the script is run directly, this example is executed:
 if __name__ == "__main__":
     import time as t
