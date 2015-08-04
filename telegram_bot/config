@@ -1,6 +1,0 @@
-[bot]
-name=<your_bot_name_here>
-token=<your_token_here>
-
-[user]
-allowed=<user_id_goes_here>
