@@ -55,6 +55,7 @@ void setup()
   Serial.println("SERVO:180;");
   Serial.println("SERVO_WAVE:4");
   Serial.println("RANDOM:ms_delay;");
+  Serial.println("STRIP_BAR_COLOR:0,15,255,240,189;");
   Serial.println("---- No more for now! ----");
 
 }
@@ -102,7 +103,7 @@ void parseCommand(String com)
     }
 
     //Print colorwipe:
-    colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0, true); // Blue
+    colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0, true);
     servo_flag.attach(5);
 
   }
@@ -154,6 +155,26 @@ void parseCommand(String com)
 
     colorWipe(strip.Color(255, 255, 255), 0, true); // White
     servo_flag.write(90);
+
+  }
+  else if(part1.equalsIgnoreCase("STRIP_BAR_COLOR"))
+  {
+    //-- STRIP_BAR_COLOR:0,15,255,240,189;
+    //-- STRIP_BAR_COLOR:index_first_led,index_last_led,R,G,B;
+
+    rainbow_mode = false;
+
+    servo_flag.detach();     
+
+    int index_first_led = getValuesFromCommand(part2);
+    int index_last_led = getValuesFromCommand(part2);
+
+    for(int i=0; i<3; i++){
+      strip_Color[i] = getValuesFromCommand(part2);
+    }
+    //Print bar & color:
+    show_bar(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), index_first_led, index_last_led, true);
+    servo_flag.attach(5);
 
   }
   else
@@ -295,4 +316,12 @@ void fire (void){
   strip.show();
   delay(random(50,150));
 
+}
+
+void show_bar(uint32_t c, uint8_t index_first, uint8_t index_last, bool dir) {
+  for(uint16_t i=index_first; i<=index_last; i++) {
+     if(dir == true)  strip.setPixelColor(i, c);
+     else strip.setPixelColor(index_last-(i+1), c);
+    strip.show();
+  }
 }

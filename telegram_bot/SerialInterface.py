@@ -57,11 +57,22 @@ class SerialInterface:
         except AttributeError, e:
             print 'Not connected: [' + str(e) + ']'
 
-    def sendStrip(self, r=0, g=0, b=0):
+    def sendStripColor(self, r=0, g=0, b=0):
         """
         Sends the command of turn lights as STRIP_COLOR:255,255,255; 
         """
         command = "STRIP_COLOR:%d,%d,%d;\n" % (r,g,b)
+
+        try:
+            self.serialPort.write(command)
+        except AttributeError, e:
+            print 'Not connected: [' + str(e) + ']'
+
+    def sendStripBarColor(self, first, last, r=0, g=0, b=0):
+        """
+        Sends the command of turn lights as STRIP_BAR_COLOR:0,15,255,240,189;; 
+        """
+        command = "STRIP_BAR_COLOR:%d,%d,%d,%d,%d;\n" % (first,last,r,g,b)
 
         try:
             self.serialPort.write(command)
