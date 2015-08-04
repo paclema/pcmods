@@ -56,3 +56,7 @@ To lift the flag, send the following text to the Telegram bot in a Telegram chat
 To put the flag down again, send this command via Telegram:
 
     /flag down
+
+Dependencies :
+
+	sudo apt-get install python-pygame

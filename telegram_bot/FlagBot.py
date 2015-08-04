@@ -8,13 +8,14 @@ import ConfigParser
 import os
 import re, string
 import time as t
-from twx.botapi import TelegramBot, ReplyKeyboardMarkup
+from twx.botapi import TelegramBot, ReplyKeyboardMarkup, InputFile, InputFileInfo
 
 from SerialInterface import SerialInterface
 
 import platform
 
-arduino = None
+import pygame
+import pygame.camera
 
 __author__ = 'def'
 
@@ -35,9 +36,17 @@ def save_log(id, update_id, chat_id, text):
     with open('log.txt', 'a') as f:
         f.write(str((id, update_id, chat_id, text))+'\n')
 
+### Init configs #########################################
+arduino = None
+
+pygame.camera.init()
+pygame.mixer.init()
+#pygame.camera.list_camera() #Camera detected or not
+cam = pygame.camera.Camera("/dev/video0",(1280,1024))
+    
 ### JukeBot things #######################################
 def send_keyboard(bot, user_id):
-    keyboard_layout = [['/flag'], ['/rainbow'] ]
+    keyboard_layout = [['/flag'], ['/rainbow'], ['/foto'] ]
     reply_markup = ReplyKeyboardMarkup.create(keyboard_layout)
     bot.send_message(user_id, 'This is the almighty FlagBot for Euskal Encounter 23!\nWelcome, mortal', reply_markup=reply_markup)
 
@@ -70,7 +79,6 @@ def main():
 
     # Connect to hardware
     interface = SerialInterface()
-
     if platform.system() == 'Windows' : 
         interface.connect('COM5', 19200)
     else:
@@ -84,8 +92,8 @@ def main():
     while True:
         try:
             updates = bot.get_updates(offset=last_id).wait()
-            print updates[0].message.sender
-            print "-------------------------------"
+            #print updates[0].message.sender
+            #print "-------------------------------"
 
             for update in updates:
                 id = update.message.message_id
@@ -111,13 +119,37 @@ def main():
                                 send_keyboard(bot, chat_id)
                             elif word == '/flag':
                                 interface.sendFlagWave(1)
-                                if updates[0].message.sender == 'None' :
+                                if update.message.sender == 'None' :
                                     bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.first_name + "!")
                                 else:
                                     bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.username + "!")
                                 break
                             elif word == '/rainbow':
                                 interface.sendRainbow()
+                                break
+                            elif word == '/foto':
+                                #interface.sendFlagWave(1)
+                                t.sleep(2) #1 sec for posing
+                                cam.start()
+                                bot.send_message(chat_id, update.message.sender.first_name + " quiere una foto!")
+                                img = cam.get_image()
+                                pygame.image.save(img,"./snap_photo.jpg")
+                                pygame.mixer.music.load("./camera_shutter.mp3")
+                                pygame.mixer.music.play()
+
+                                fp = open('snap_photo.jpg', 'rb')
+                                file_info = InputFileInfo('snap_photo.jpg', fp, 'image/jpg')
+
+                                f = InputFile('photo', file_info)
+
+                                bot.send_photo(chat_id, photo=f)
+
+                                cam.stop()
+                                try:
+                                    print "Foto enviada de " + update.message.sender.first_name + " " + update.message.sender.last_name + ", " + update.message.sender.username  + "!"
+                                except Exception, e:
+                                    print "User have no name: "
+                                    print e
                                 break
                             else:
                                 bot.send_message(chat_id, "Bad syntax!")
