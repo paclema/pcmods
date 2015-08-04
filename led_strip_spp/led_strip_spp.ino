@@ -4,6 +4,10 @@
   #include <avr/power.h>
 #endif
 
+#include "U8glib.h"
+U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);  // I2C / TWI 
+extern uint8_t I2C_SLA;
+
 #define PIN 6
 
 // Parameter 1 = number of pixels in strip
@@ -27,6 +31,24 @@ bool rainbow_mode = false;
 String command;
 
 int strip_Color[3];
+
+void draw(void) {
+  // graphic commands to redraw the complete screen should be placed here  
+
+  u8g.setFont(u8g_font_unifont);
+  //u8g.setScale2x2();
+  //u8g.setFont(u8g_font_osb21);
+  if (I2C_SLA == 0x078){
+
+  u8g.drawStr( 0, 22, "Tienes 1 mensaje");
+  //u8g.drawStr( 0, 44, "Enrich Mila");
+}
+  else if (I2C_SLA == 0x07a){
+  u8g.drawStr( 0, 22, "Julius");
+  //u8g.drawStr( 0, 44, "pava");
+    }
+
+}
 
 void setup()
 {
@@ -58,6 +80,9 @@ void setup()
   Serial.println("STRIP_BAR_COLOR:0,15,255,240,189;");
   Serial.println("---- No more for now! ----");
 
+  imprimeEn(0x07a);
+  imprimeEn(0x078);
+
 }
 
 void loop()
@@ -80,6 +105,8 @@ void loop()
     }
 
     //fire();
+
+
 }
 
 void parseCommand(String com)
@@ -192,8 +219,21 @@ int getValuesFromCommand (String& command_values){
   return value;
 }
 
-//------------------------ Strip functions:
+//------------------------ LCD functions:
+void imprimeEn(uint8_t address){
 
+I2C_SLA = address;
+  // picture loop
+  u8g.firstPage();  
+  do {
+    draw();
+  } while( u8g.nextPage() );
+  
+  // rebuild the picture after some delay
+  delay(50);
+}
+
+//------------------------  Strip functions:
 
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait, bool dir) {
