@@ -50,6 +50,23 @@ def send_keyboard(bot, user_id):
     reply_markup = ReplyKeyboardMarkup.create(keyboard_layout)
     bot.send_message(user_id, 'This is the almighty FlagBot for Euskal Encounter 23!\nWelcome, mortal', reply_markup=reply_markup)
 
+def get_user_name(user, show_last_name = 0, show_all_info = 0):
+
+    if show_all_info == False:
+
+        if user.username != None: name = user.username
+        else:
+            name = user.first_name
+            if (user.last_name != None) and show_last_name == True: name += " " + user.last_name
+    else:
+        if (user.first_name != None): name = user.first_name
+        else: 
+            name = "No name"
+        if (user.last_name != None): name += " " + user.last_name
+        if (user.username != None): name += " " + user.username
+
+    return name
+
 def main():
     print '[+] Starting bot...'
 
@@ -95,7 +112,9 @@ def main():
             #print updates[0].message.sender
             #print "-------------------------------"
 
+
             for update in updates:
+                
                 id = update.message.message_id
                 update_id = update.update_id
                 user = update.message.sender
@@ -114,16 +133,13 @@ def main():
 
                         for i, word in enumerate(words):
                             # Process commands:
+                            print                            
                             if word == '/start':
                                 print "New user started the app: " + str(user)
                                 send_keyboard(bot, chat_id)
                             elif word == '/flag':
-                                interface.sendFlagWave(1)
-                                if update.message.sender == 'None' :
-                                    bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.first_name + "!")
-                                else:
-                                    bot.send_message(chat_id, "Moviendo la bandera " + update.message.sender.username + "!")
-                                break
+                                if update.message.sender.username  == 'paclema' : interface.sendFlagWave(1)
+                                bot.send_message(chat_id, "Moviendo la bandera " + get_user_name(update.message.sender) + "!")
                             elif word == '/rainbow':
                                 interface.sendRainbow()
                                 break
@@ -131,7 +147,7 @@ def main():
                                 #interface.sendFlagWave(1)
                                 t.sleep(2) #1 sec for posing
                                 cam.start()
-                                bot.send_message(chat_id, update.message.sender.first_name + " quiere una foto!")
+                                bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
                                 img = cam.get_image()
                                 pygame.image.save(img,"./snap_photo.jpg")
                                 pygame.mixer.music.load("./camera_shutter.mp3")
@@ -145,11 +161,8 @@ def main():
                                 bot.send_photo(chat_id, photo=f)
 
                                 cam.stop()
-                                try:
-                                    print "Foto enviada de " + update.message.sender.first_name + " " + update.message.sender.last_name + ", " + update.message.sender.username  + "!"
-                                except Exception, e:
-                                    print "User have no name: "
-                                    print e
+                                print "Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
+
                                 break
                             else:
                                 bot.send_message(chat_id, "Bad syntax!")
