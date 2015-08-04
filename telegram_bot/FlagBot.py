@@ -149,10 +149,9 @@ def main():
                                     interface.sendStripBarColor(0, 2*a, 8.5*a, 0, 0)
                                     t.sleep(0.03)
 
-
-                                #t.sleep(2) #1 sec for posing
                                 cam.start()
                                 bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
+                                
                                 img = cam.get_image()
                                 pygame.image.save(img,"./snap_photo.jpg")
                                 pygame.mixer.music.load("./camera_shutter.mp3")
