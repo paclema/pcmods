@@ -95,6 +95,7 @@ void parseCommand(String com)
 
     rainbow_mode = false;
 
+    servo_flag.detach();     
     for(int i=0; i<3; i++){
 
       strip_Color[i] = getValuesFromCommand(part2);
@@ -102,6 +103,7 @@ void parseCommand(String com)
 
     //Print colorwipe:
     colorWipe(strip.Color(strip_Color[0], strip_Color[1] , strip_Color[2] ), 0, true); // Blue
+    servo_flag.attach(5);
 
   }
 
@@ -156,8 +158,8 @@ void parseCommand(String com)
   }
   else
   {
-    Serial.print("Command not recognized");
-   // Serial.println(com);
+    Serial.print("Command not recognized: ");
+    Serial.println(com);
 
   }  
 

@@ -59,7 +59,7 @@ class SerialInterface:
 
     def sendStrip(self, r=0, g=0, b=0):
         """
-        Sends the command turn lights as STRIP_COLOR:255,255,255; 
+        Sends the command of turn lights as STRIP_COLOR:255,255,255; 
         """
         command = "STRIP_COLOR:%d,%d,%d;\n" % (r,g,b)
 
