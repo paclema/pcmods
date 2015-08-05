@@ -27,26 +27,46 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(52, PIN, NEO_GRB + NEO_KHZ800);
 Servo servo_flag;
 int rainbow_delay = 20;
 bool rainbow_mode = false;
+int strip_Color[3];
 
 String command;
 
-int strip_Color[3];
+char *lcdText;
+
+#define message_width 20
+#define message_height 20
+static unsigned char message_bits[] U8G_PROGMEM = {
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x0f,
+   0x01, 0x00, 0x08, 0x03, 0x00, 0x0c, 0x05, 0x00, 0x0a, 0x09, 0x00, 0x09,
+   0x11, 0x80, 0x08, 0x21, 0x40, 0x08, 0xc1, 0x30, 0x08, 0xb1, 0xd9, 0x08,
+   0x09, 0x06, 0x09, 0x05, 0x00, 0x0a, 0x03, 0x00, 0x0c, 0x01, 0x00, 0x08,
+   0xff, 0xff, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 void draw(void) {
   // graphic commands to redraw the complete screen should be placed here  
 
   u8g.setFont(u8g_font_unifont);
-  //u8g.setScale2x2();
+  u8g.setScale2x2();
   //u8g.setFont(u8g_font_osb21);
   if (I2C_SLA == 0x078){
-
-  u8g.drawStr( 0, 22, "Tienes 1 mensaje");
-  //u8g.drawStr( 0, 44, "Enrich Mila");
-}
-  else if (I2C_SLA == 0x07a){
-  u8g.drawStr( 0, 22, "Julius");
-  //u8g.drawStr( 0, 44, "pava");
+    lcdText = "Tienes 0 mensajes";
+    //u8g.drawStr(0,10,lcdText);
+    for (int i=0; i<20; i++){
+      u8g.drawXBMP( i, 0, message_width, message_height, message_bits);
+      u8g.setHiColorByRGB(0,0,0);
+      /*
+      for (u8g_uint_t h=0; h<128; h++){
+        for (u8g_uint_t j=0; j<64; j++){
+          u8g_DrawPixel(u8g, h, j);
+        }
+      }
+      */
+      delay(100);
     }
+  }
+  else if (I2C_SLA == 0x07a){
+    u8g.drawStr( 0, 22, "Julius");
+  }
 
 }
 
@@ -80,8 +100,7 @@ void setup()
   Serial.println("STRIP_BAR_COLOR:0,15,255,240,189;");
   Serial.println("---- No more for now! ----");
 
-  imprimeEn(0x07a);
-  imprimeEn(0x078);
+
 
 }
 
@@ -105,6 +124,9 @@ void loop()
     }
 
     //fire();
+
+  //imprimeEn(0x07a);
+  imprimeEn(0x078);
 
 
 }

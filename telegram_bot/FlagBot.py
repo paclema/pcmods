@@ -149,6 +149,9 @@ def main():
                                     interface.sendStripBarColor(0, 2*a, 8.5*a, 0, 0)
                                     t.sleep(0.03)
 
+                                interface.sendStripColor(0,0,0)
+                                t.sleep(0.2)
+                                interface.sendStripColor(0,0,0)
                                 cam.start()
                                 bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
                                 
