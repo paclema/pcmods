@@ -4,10 +4,11 @@
   #include <avr/power.h>
 #endif
 
+/*
 #include "U8glib.h"
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);  // I2C / TWI 
 extern uint8_t I2C_SLA;
-
+*/
 #define PIN 6
 
 // Parameter 1 = number of pixels in strip
@@ -17,7 +18,7 @@ extern uint8_t I2C_SLA;
 //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(52, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(52, PIN, NEO_GRB + NEO_KHZ400);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -31,6 +32,7 @@ int strip_Color[3];
 
 String command;
 
+/*
 char *lcdText;
 
 #define message_width 20
@@ -61,6 +63,7 @@ void draw(void) {
         }
       }
       */
+      /*
       delay(100);
     }
   }
@@ -69,6 +72,9 @@ void draw(void) {
   }
 
 }
+
+*/
+
 
 void setup()
 {
@@ -126,7 +132,7 @@ void loop()
     //fire();
 
   //imprimeEn(0x07a);
-  imprimeEn(0x078);
+  //imprimeEn(0x078);
 
 
 }
@@ -241,6 +247,7 @@ int getValuesFromCommand (String& command_values){
   return value;
 }
 
+/*
 //------------------------ LCD functions:
 void imprimeEn(uint8_t address){
 
@@ -254,6 +261,7 @@ I2C_SLA = address;
   // rebuild the picture after some delay
   delay(50);
 }
+*/
 
 //------------------------  Strip functions:
 
