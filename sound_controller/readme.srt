@@ -1,0 +1,6 @@
+# Dependencies:
+
+Download SoundVolumeView: http://www.nirsoft.net/utils/sound_volume_view.html
+Python: https://www.python.org/downloads/release/python-2711/
+pip on windows: http://stackoverflow.com/questions/4750806/how-do-i-install-pip-on-windows
+pip install pyserial
