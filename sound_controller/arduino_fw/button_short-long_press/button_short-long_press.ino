@@ -10,14 +10,13 @@ long longPressTime = 400;
 boolean buttonActive = false;
 boolean longPressActive = false;
 
-unsigned long currentTime;
-unsigned long loopTime;
-int brightness = 0;    // how bright the LED is
-int fadeAmount = 6;    // how many points to fade the LED by
-
 boolean longClic = false;
 boolean shortClic = false;
 boolean LEDligh = false;
+
+long time = 0;
+int periode = 2000;
+
 void setup() {
 
 	pinMode(LED1, OUTPUT);
@@ -74,14 +73,7 @@ void loop() {
 
 
 	if(longClic){
-		 currentTime = millis();
-	     if(currentTime >= (loopTime + 20)){
-	     	analogWrite(LED1, brightness);
-	     	brightness = brightness + fadeAmount;
-	     	if (brightness == 0 || brightness == 255) {
-	     		fadeAmount = -fadeAmount ;
-	     	}
-	     	loopTime = currentTime;
-	     }
+		time = millis();
+		analogWrite(LED1, 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
 	}
 }
