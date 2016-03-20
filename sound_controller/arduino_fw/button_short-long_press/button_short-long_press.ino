@@ -15,7 +15,7 @@ boolean shortClic = false;
 boolean LEDligh = false;
 
 long time = 0;
-int periode = 2000;
+int periode = 1000;
 
 void setup() {
 
