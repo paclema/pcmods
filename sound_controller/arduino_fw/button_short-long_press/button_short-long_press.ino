@@ -21,12 +21,13 @@ void setup() {
 
 	pinMode(LED1, OUTPUT);
 	pinMode(button, INPUT);
+	digitalWrite(button,HIGH);
 	Serial.begin(115200);
 }
 
 void loop() {
 
-	if (digitalRead(button) == HIGH) {
+	if (digitalRead(button) == LOW) {
 		if (buttonActive == false) {
 			buttonActive = true;
 			buttonTimer = millis();
@@ -64,8 +65,14 @@ void loop() {
 	if(shortClic){
 		Serial.print("Entro en shortClic. Ledlight: ");
 		Serial.println(LEDligh);
-		if(LEDligh)	digitalWrite(LED1,HIGH);
-		else digitalWrite(LED1,LOW);
+		if(LEDligh){
+			digitalWrite(LED1,HIGH);
+			//Controller_send("unmute");
+		}
+		else{
+			digitalWrite(LED1,LOW);
+			//Controller_send("mute");
+		}
 		LEDligh = !LEDligh;
 		shortClic = false;
 		longClic = false;
@@ -73,6 +80,7 @@ void loop() {
 
 
 	if(longClic){
+		Serial.println("Entro en longClic");
 		time = millis();
 		analogWrite(LED1, 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
 	}
