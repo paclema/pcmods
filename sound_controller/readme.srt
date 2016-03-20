@@ -7,5 +7,5 @@ pip install pyserial
 
 Oled i2c:
 
-Adafruit_SSD1306 (<https://github.com/adafruit/Adafruit_SSD1306>)  
-Adafruit-GFX-Library (<https://github.com/adafruit/Adafruit-GFX-Library>)  
+Tutorial: (<http://arduino-er.blogspot.com.es/2015/04/hello-world-096-inch-128x64-i2c-oled-on.html>)  
+u8glib Library (<https://github.com/olikraus/u8glib>)  
