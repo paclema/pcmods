@@ -1,20 +1,28 @@
-int LED1 = 12;
+int LED1 = 9;
 int button = 3;
 
 boolean LED1State = false;
 boolean LED2State = false;
 
 long buttonTimer = 0;
-long longPressTime = 250;
+long longPressTime = 400;
 
 boolean buttonActive = false;
 boolean longPressActive = false;
 
+unsigned long currentTime;
+unsigned long loopTime;
+int brightness = 0;    // how bright the LED is
+int fadeAmount = 6;    // how many points to fade the LED by
+
+boolean longClic = false;
+boolean shortClic = false;
+boolean LEDligh = false;
 void setup() {
 
 	pinMode(LED1, OUTPUT);
 	pinMode(button, INPUT);
-
+	Serial.begin(115200);
 }
 
 void loop() {
@@ -29,6 +37,9 @@ void loop() {
 			longPressActive = true;
 			LED1State = !LED1State;
 			//digitalWrite(LED1, LED1State);
+			Serial.println("Long clic");
+			//LedState(0);
+			longClic = true;
 		}
 
 	} 
@@ -38,29 +49,39 @@ void loop() {
 				longPressActive = false;
 			} else {
 				LED2State = !LED2State;
+				Serial.println("Short clic");
 				//digitalWrite(LED2, LED2State);
+				//LedState(1);
+				shortClic = true;
+
 			}
 			buttonActive = false;
 		}
 	}
 
 
-	// set the LED:
-	if(LED2State){
-		currentTime = millis();
-		if(currentTime >= (loopTime + 20)){
-			analogWrite(9, brightness);
-			brightness = brightness + fadeAmount;
-			if (brightness == 0 || brightness == 255) {
-				fadeAmount = -fadeAmount ;
-			}
-			loopTime = currentTime;
-		}
+
+
+	if(shortClic){
+		Serial.print("Entro en shortClic. Ledlight: ");
+		Serial.println(LEDligh);
+		if(LEDligh)	digitalWrite(LED1,HIGH);
+		else digitalWrite(LED1,LOW);
+		LEDligh = !LEDligh;
+		shortClic = false;
+		longClic = false;
 	}
-	else{
-			if (LED1State)	digitalWrite(9,HIGH);
-				else	digitalWrite(9,HIGH);
-			}
 
 
+	if(longClic){
+		 currentTime = millis();
+	     if(currentTime >= (loopTime + 20)){
+	     	analogWrite(LED1, brightness);
+	     	brightness = brightness + fadeAmount;
+	     	if (brightness == 0 || brightness == 255) {
+	     		fadeAmount = -fadeAmount ;
+	     	}
+	     	loopTime = currentTime;
+	     }
+	}
 }
