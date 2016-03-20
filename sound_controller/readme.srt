@@ -4,3 +4,8 @@ Download SoundVolumeView: http://www.nirsoft.net/utils/sound_volume_view.html
 Python: https://www.python.org/downloads/release/python-2711/
 pip on windows: http://stackoverflow.com/questions/4750806/how-do-i-install-pip-on-windows
 pip install pyserial
+
+Oled i2c:
+
+Adafruit_SSD1306 (<https://github.com/adafruit/Adafruit_SSD1306>)  
+Adafruit-GFX-Library (<https://github.com/adafruit/Adafruit-GFX-Library>)  
