@@ -1,14 +1,14 @@
 int leds[4]  = {6, 5, 9 ,10};
 int buttons[5] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
 
-long buttonTimer[4] = {0};
+long buttonTimer[5] = {0};
 long longPressTime = 400;
 
-boolean buttonActive[4] = {};
-boolean longPressActive[4] = {};
+boolean buttonActive[5] = {};
+boolean longPressActive[5] = {};
 
-boolean longClic[4] = {false};
-boolean shortClic[4] = {false};
+boolean longClic[5] = {false};
+boolean shortClic[5] = {false};
 boolean LEDligh[4] = {false};
 
 long time = 0;
@@ -30,6 +30,9 @@ void setup() {
 		digitalWrite(leds[i],HIGH);
 		digitalWrite(buttons[i],HIGH);
 	}
+
+		pinMode(buttons[5], INPUT);
+		digitalWrite(buttons[5],HIGH);
 
 	pinMode(encoder0PinA, INPUT); 
 	digitalWrite(encoder0PinA, HIGH);       
@@ -64,8 +67,8 @@ void loop() {
 	}
 
 
-
-
+		read_button(5);
+		encoder_controll();
 }
 
 void read_button(int index){
@@ -119,7 +122,7 @@ void control_led_state(int index){
 
 
 	if(longClic[index]){
-		Serial.println("Entro en longClic");
+		//Serial.println("Entro en longClic");
 		time = millis();
 		analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
 
@@ -137,4 +140,12 @@ void encoder_controll(){
 
 		Serial.println(volumeCh1);
 		*/
+
+		if(shortClic[5] == true){
+			Serial.println("Entro en longClic de encoder");
+			for(int i=0; i<4; i++){
+				shortClic[i] = false;
+				longClic[i] = false;
+			}
+		}
 }
