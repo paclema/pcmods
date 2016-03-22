@@ -1,15 +1,17 @@
-int leds[6]  = {6, 5, 9 ,10,13};
-int buttons[5] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
+#define numLEDs 4
+#define numButtons 5
+int leds[numLEDs]  = {6, 5, 9 ,10};
+int buttons[numButtons] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
 
-long buttonTimer[5];
+long buttonTimer[numButtons];
 long longPressTime = 400;
 
-boolean buttonActive[5];
-boolean longPressActive[5];
+boolean buttonActive[numButtons];
+boolean longPressActive[numButtons];
 
-boolean longClic[5] = {false,false,false,false,false};
-boolean shortClic[5] = {false,false,false,false,false};
-boolean LEDligh[5] = {false,false,false,false,false};
+boolean longClic[numButtons] = {false,false,false,false,false};
+boolean shortClic[numButtons] = {false,false,false,false,false};
+boolean LEDligh[numLEDs] = {false,false,false,false};
 
 long time = 0;
 unsigned long _millis;
@@ -54,7 +56,6 @@ void loop() {
 		delay(2);
 		if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	encoder0Pos++;
 		else	encoder0Pos--;
-
 		rotating=false; // Reset the flag back to false
 		//Serial.println(encoder0Pos);
 	}
@@ -67,6 +68,10 @@ void loop() {
 	}
 
 	encoder_controll();
+
+	for(int i=0; i<5; i++){
+		reset_variables(i);
+	}
 }
 
 void read_button(int index){
@@ -113,8 +118,6 @@ void control_led_state(int index){
 			//Controller_send("mute", index);
 		}
 		LEDligh[index] = !LEDligh[index];
-		shortClic[index] = false;
-		longClic[index] = false;
 	}
 
 
@@ -143,4 +146,14 @@ void encoder_controll(){
 
 			}
 		}
+}
+
+void reset_variables(int index){
+
+	if(shortClic[index]){
+		shortClic[index] = false;
+		longClic[index] = false;
+		LEDligh[index] = !LEDligh[index];
+	}
+
 }
