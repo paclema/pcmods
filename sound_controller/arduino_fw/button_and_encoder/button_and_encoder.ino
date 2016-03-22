@@ -1,17 +1,18 @@
-int leds[4]  = {6, 5, 9 ,10};
+int leds[6]  = {6, 5, 9 ,10,13};
 int buttons[5] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
 
-long buttonTimer[5] = {0};
+long buttonTimer[5];
 long longPressTime = 400;
 
-boolean buttonActive[5] = {};
-boolean longPressActive[5] = {};
+boolean buttonActive[5];
+boolean longPressActive[5];
 
-boolean longClic[5] = {false};
-boolean shortClic[5] = {false};
-boolean LEDligh[4] = {false};
+boolean longClic[5] = {false,false,false,false,false};
+boolean shortClic[5] = {false,false,false,false,false};
+boolean LEDligh[5] = {false,false,false,false,false};
 
 long time = 0;
+unsigned long _millis;
 int periode = 1000;
 
 #define encoder0PinA 2
@@ -20,19 +21,16 @@ int periode = 1000;
 volatile unsigned int encoder0Pos = 0;
 static boolean rotating=false;
 
-int volumeCh1 = 50, lastVolumeCh1 = 50;
-
 void setup() {
 
-	for(int i=0; i<4;i++){
+	Serial.begin(115200);
+
+	for(int i=0; i<5;i++){
 		pinMode(leds[i], OUTPUT);
 		pinMode(buttons[i], INPUT);
 		digitalWrite(leds[i],HIGH);
 		digitalWrite(buttons[i],HIGH);
 	}
-
-		pinMode(buttons[5], INPUT);
-		digitalWrite(buttons[5],HIGH);
 
 	pinMode(encoder0PinA, INPUT); 
 	digitalWrite(encoder0PinA, HIGH);       
@@ -41,17 +39,17 @@ void setup() {
 
 	attachInterrupt(0, rotEncoder, CHANGE); 
 
-	Serial.begin(115200);
+	
 }
 
 void rotEncoder(){
   rotating=true; 
   // If a signal change (noise or otherwise) is detected
   // in the rotary encoder, the flag is set to true
+  
 }
 
 void loop() {
-
 	while(rotating) {
 		delay(2);
 		if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	encoder0Pos++;
@@ -61,25 +59,24 @@ void loop() {
 		//Serial.println(encoder0Pos);
 	}
 
-	for(int i=0; i<4; i++){
+	_millis = millis();
+
+	for(int i=0; i<5; i++){
 		read_button(i);
 		control_led_state(i);
 	}
 
-
-		read_button(5);
-		encoder_controll();
+	encoder_controll();
 }
 
 void read_button(int index){
-
 	if (digitalRead(buttons[index]) == LOW) {
 		if (buttonActive[index] == false) {
 			buttonActive[index] = true;
-			buttonTimer[index] = millis();
+			buttonTimer[index] = _millis;
 		}
 
-		if ((millis() - buttonTimer[index] > longPressTime) && (longPressActive[index] == false)) {
+		if ((_millis - buttonTimer[index] > longPressTime) && (longPressActive[index] == false)) {
 			longPressActive[index] = true;
 			Serial.print("Long clic: ");
 			Serial.println(index);
@@ -122,8 +119,9 @@ void control_led_state(int index){
 
 
 	if(longClic[index]){
-		//Serial.println("Entro en longClic");
-		time = millis();
+		Serial.print("Entro en longClic de: ");
+		Serial.println(index);
+		time = _millis;
 		analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
 
 	}
@@ -132,20 +130,17 @@ void control_led_state(int index){
 
 void encoder_controll(){
 
-/*
-		volumeCh1 = encoder0Pos;
-		if(volumeCh1 >= 100) volumeCh1 = 100;
-		if(volumeCh1 <= 0) volumeCh1 = 0;
-		lastVolumeCh1 = volumeCh1;
-
-		Serial.println(volumeCh1);
-		*/
-
-		if(shortClic[5] == true){
-			Serial.println("Entro en longClic de encoder");
+		if(shortClic[4] == true){
+			Serial.println("------encoder_controll------");
+			
 			for(int i=0; i<4; i++){
-				shortClic[i] = false;
-				longClic[i] = false;
+				//shortClic[i] = false;
+				if(longClic[i]){
+					longClic[i] = false;
+					if(LEDligh[i])	digitalWrite(leds[i],HIGH);
+					else	digitalWrite(leds[i],LOW);					
+				}
+
 			}
 		}
 }
