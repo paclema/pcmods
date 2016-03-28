@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #define numLEDs 4
 #define numButtons 5
 int leds[numLEDs]  = {6, 5, 9 ,10};
@@ -23,6 +25,12 @@ int periode = 1000;
 volatile unsigned int encoder0Pos = 0;
 static boolean rotating=false;
 
+void read_button(int index);
+void control_led_state(int index);
+void encoder_controll();
+void reset_variables(int index);
+void rotEncoder();
+
 void setup() {
 
 	Serial.begin(115200);
@@ -34,21 +42,21 @@ void setup() {
 		digitalWrite(buttons[i],HIGH);
 	}
 
-	pinMode(encoder0PinA, INPUT); 
-	digitalWrite(encoder0PinA, HIGH);       
-	pinMode(encoder0PinB, INPUT); 
-	digitalWrite(encoder0PinB, HIGH); 
+	pinMode(encoder0PinA, INPUT);
+	digitalWrite(encoder0PinA, HIGH);
+	pinMode(encoder0PinB, INPUT);
+	digitalWrite(encoder0PinB, HIGH);
 
-	attachInterrupt(0, rotEncoder, CHANGE); 
+	attachInterrupt(0, rotEncoder, CHANGE);
 
-	
+
 }
 
 void rotEncoder(){
-  rotating=true; 
+  rotating=true;
   // If a signal change (noise or otherwise) is detected
   // in the rotary encoder, the flag is set to true
-  
+
 }
 
 void loop() {
@@ -88,7 +96,7 @@ void read_button(int index){
 			longClic[index] = true;
 		}
 
-	} 
+	}
 	else {
 		if (buttonActive[index] == true) {
 			if (longPressActive[index] == true) {
@@ -135,13 +143,13 @@ void encoder_controll(){
 
 		if(shortClic[4] == true){
 			Serial.println("------encoder_controll------");
-			
+
 			for(int i=0; i<4; i++){
 				//shortClic[i] = false;
 				if(longClic[i]){
 					longClic[i] = false;
 					if(LEDligh[i])	digitalWrite(leds[i],HIGH);
-					else	digitalWrite(leds[i],LOW);					
+					else	digitalWrite(leds[i],LOW);
 				}
 
 			}
