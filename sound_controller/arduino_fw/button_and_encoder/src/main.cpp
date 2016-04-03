@@ -26,10 +26,12 @@ volatile unsigned int encoder0Pos = 0;
 static boolean rotating=false;
 
 void read_button(int index);
-void control_led_state(int index);
+void control_status_mode(int index);
 void encoder_controll();
 void reset_variables(int index);
 void rotEncoder();
+void print_shortClic(int index);
+void print_longClic(int index);
 
 void setup() {
 
@@ -51,7 +53,7 @@ void setup() {
 
 
 }
-
+Serial.println("______________Sound Mixer v0.1___________________________________");
 void rotEncoder(){
   rotating=true;/*
   // If a signal change (noise or otherwise) is detected
@@ -76,14 +78,36 @@ void loop() {
 
 	for(int i=0; i<4; i++){
 		read_button(i);
-		control_led_state(i);
+		//control_led_state(i);
 	}
 
-	//encoder_controll();
+	for(int i=0; i<4; i++){
+		control_status_mode(i);
+	}
+
 /*
+	Serial.print("Short clic: ");
+	for(int i=0; i<4; i++){
+		print_shortClic(i);
+		Serial.print(",");
+	}
+	Serial.println(".");
+
+	Serial.print("Long clic: ");
+	for(int i=0; i<4; i++){
+		print_longClic(i);
+		Serial.print(",");
+	}
+	Serial.println(".");
+	Serial.println("");
+	Serial.println("____________________________________________________________________________________");
+*/
+
+	//encoder_controll();
+
 	for(int i=0; i<4; i++){
 		reset_variables(i);
-	}*/
+	}
 }
 
 void read_button(int index){
@@ -116,37 +140,36 @@ void read_button(int index){
 	}
 }
 
-void control_led_state(int index){
 
 	if(shortClic[index]){
-		//Serial.print("Entro en shortClic. Ledlight: ");
-		//Serial.println(LEDligh[index]);
-		if(LEDligh[index]){
-			digitalWrite(leds[index],HIGH);
-			//Controller_send("unmute", index);
-		}
-		else{
-			digitalWrite(leds[index],LOW);
-			//Controller_send("mute", index);
-		}
-		LEDligh[index] = !LEDligh[index];
-		shortClic[index] = false;
-		longClic[index] = false;
-	}
-
-
-	if(longClic[index]){
-		//Serial.print("Entro en longClic de: ");
-		//Serial.println(index);
-		time = _millis;
-		analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
-
 	}
 
 }
 
-void encoder_controll(){
+void control_status_mode(int index){
 
+
+					digitalWrite(leds[index],HIGH);
+					//Controller_send("unmute", index);
+					Serial.println("unmute");
+					LEDligh[index] = true;
+				}
+				digitalWrite(leds[index],LOW);
+				//Controller_send("mute", index);
+				Serial.println("mute");
+				LEDligh[index] = false;
+			}
+
+		}
+			//Serial.print("Entro en longClic de: ");
+			//Serial.println(index);
+			time = _millis;
+			analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
+			Serial.println("selVol");
+		}
+}
+
+void encoder_controll(){
 		if(shortClic[4] == true){
 			//Serial.println("------encoder_controll------");
 
@@ -157,17 +180,23 @@ void encoder_controll(){
 					if(LEDligh[i])	digitalWrite(leds[i],HIGH);
 					else	digitalWrite(leds[i],LOW);
 				}
-
 			}
 		}
 }
 
 void reset_variables(int index){
-
-	if(shortClic[index]){
+//	if(shortClic[index]){
 		shortClic[index] = false;
 		longClic[index] = false;
-		LEDligh[index] = !LEDligh[index];
-	}
+	//	LEDligh[index] = !LEDligh[index];
+//	}
 
+}
+
+void print_shortClic(int index){
+	Serial.print(shortClic[index]);
+}
+
+void print_longClic(int index){
+	Serial.print(longClic[index]);
 }
