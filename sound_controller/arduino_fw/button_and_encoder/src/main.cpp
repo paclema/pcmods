@@ -3,6 +3,8 @@
 #define numLEDs 4
 #define numButtons 5
 #define numChannels ( numButtons - 1)
+#define encVolMultiply 4
+
 int leds[numLEDs]  = {6, 5, 9 ,10};
 int buttons[numButtons] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
 
@@ -14,8 +16,11 @@ boolean longPressActive[numButtons];
 
 boolean longClic[numButtons] = {false,false,false,false,false};
 boolean shortClic[numButtons] = {false,false,false,false,false};
-int mode_channel_state[numChannels] = {0,0,0,0};
+
+int volume_channel[numChannels+1] = {50,50,50,50,50};				//volume_channel[0-3]:Channels 1-4 volume_channel[4]:Global Volume
+int mode_channel_state[numChannels] = {0,0,0,0};				//States: 0:unmute 1:mute 2:selecVolume
 int mode_channel_state_last[numChannels] = {1,1,1,1};
+
 boolean LEDligh[numLEDs] = {false,false,false,false};
 
 long time = 0;
@@ -25,8 +30,9 @@ int periode = 1000;
 #define encoder0PinA 2
 #define encoder0PinB 3
 
-volatile int encoder0Pos = 0;
-static boolean rotating=false;
+volatile int encoder0Pos = 0, SelVol = 50;
+static boolean rotating = false, SelVol_state = false;
+
 
 void read_button(int index);
 void update_channel_mode(int index);
@@ -72,10 +78,26 @@ void loop() {
 
 	while(rotating) {
 		delay(2);
-		if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	encoder0Pos++;
-		else	encoder0Pos--;
+
+		if(SelVol_state){
+			if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	SelVol = SelVol + encVolMultiply;
+			else	SelVol = SelVol - encVolMultiply;
+
+			if(SelVol>=100) SelVol = 100;
+			else if(SelVol<=0) SelVol = 0;
+
+			Serial.print("SelVol: ");
+			Serial.println(SelVol);
+		}
+		else{
+			if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	encoder0Pos++;
+			else	encoder0Pos--;
+
+			Serial.print("encoder0Pos: ");
+			Serial.println(encoder0Pos);
+		}
+
 		rotating=false; // Reset the flag back to false
-		Serial.println(encoder0Pos);
 	}
 
 	_millis = millis();
@@ -152,7 +174,10 @@ void update_channel_mode(int index){
 		if(LEDligh[index])	mode_channel_state[index]=1;
 		else	mode_channel_state[index]=0;
 	}
-	if(longClic[index]) mode_channel_state[index]=2;
+	if(longClic[index]){
+		SelVol_state = true;
+		mode_channel_state[index]=2;
+	}
 
 }
 
@@ -172,6 +197,8 @@ void encoder_controll(){
 			Serial.println("");
 			Serial.println("------encoder_control    END------");
 
+			SelVol_state = false;
+			// COPIAR AQUI selVol en el array de volumenes de cada canal
 		}
 }
 
@@ -200,7 +227,7 @@ void control_status_mode(int index){
 			//Serial.println(index);
 			time = _millis;
 			analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
-			//Serial.println("selVol");
+			//Serial.println("SelVol_state");
 		}
 		mode_channel_state_last[index] = mode_channel_state[index];
 }
