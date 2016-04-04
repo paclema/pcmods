@@ -25,7 +25,7 @@ int periode = 1000;
 #define encoder0PinA 2
 #define encoder0PinB 3
 
-volatile unsigned int encoder0Pos = 0;
+volatile int encoder0Pos = 0;
 static boolean rotating=false;
 
 void read_button(int index);
