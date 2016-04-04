@@ -2,6 +2,7 @@
 
 #define numLEDs 4
 #define numButtons 5
+#define numChannels ( numButtons - 1)
 int leds[numLEDs]  = {6, 5, 9 ,10};
 int buttons[numButtons] = {8, 7, 12, 11, 4};	//pin 4 es encoder_button
 
@@ -13,6 +14,8 @@ boolean longPressActive[numButtons];
 
 boolean longClic[numButtons] = {false,false,false,false,false};
 boolean shortClic[numButtons] = {false,false,false,false,false};
+int mode_channel_state[numChannels] = {0,0,0,0};
+int mode_channel_state_last[numChannels] = {1,1,1,1};
 boolean LEDligh[numLEDs] = {false,false,false,false};
 
 long time = 0;
@@ -26,6 +29,7 @@ volatile unsigned int encoder0Pos = 0;
 static boolean rotating=false;
 
 void read_button(int index);
+void update_channel_mode(int index);
 void control_status_mode(int index);
 void encoder_controll();
 void reset_variables(int index);
@@ -37,7 +41,7 @@ void setup() {
 
 	Serial.begin(115200);
 
-	for(int i=0; i<5;i++){
+	for(int i=0; i<numButtons;i++){
 		pinMode(leds[i], OUTPUT);
 		pinMode(buttons[i], INPUT);
 		digitalWrite(leds[i],HIGH);
@@ -51,9 +55,9 @@ void setup() {
 
 	attachInterrupt(0, rotEncoder, CHANGE);
 
-
-}
 Serial.println("______________Sound Mixer v0.1___________________________________");
+}
+
 void rotEncoder(){
   rotating=true;/*
   // If a signal change (noise or otherwise) is detected
@@ -76,13 +80,12 @@ void loop() {
 
 	_millis = millis();
 
-	for(int i=0; i<4; i++){
+	for(int i=0; i<numButtons; i++){
 		read_button(i);
-		//control_led_state(i);
 	}
 
-	for(int i=0; i<4; i++){
-		control_status_mode(i);
+	for(int i=0; i<numChannels; i++){
+		update_channel_mode(i);
 	}
 
 /*
@@ -103,9 +106,12 @@ void loop() {
 	Serial.println("____________________________________________________________________________________");
 */
 
-	//encoder_controll();
+	encoder_controll();
 
-	for(int i=0; i<4; i++){
+	for(int i=0; i<numChannels; i++){
+		control_status_mode(i);
+	}
+	for(int i=0; i<numButtons; i++){
 		reset_variables(i);
 	}
 }
@@ -140,48 +146,63 @@ void read_button(int index){
 	}
 }
 
+void update_channel_mode(int index){
 
 	if(shortClic[index]){
+		if(LEDligh[index])	mode_channel_state[index]=1;
+		else	mode_channel_state[index]=0;
 	}
+	if(longClic[index]) mode_channel_state[index]=2;
 
-}
-
-void control_status_mode(int index){
-
-
-					digitalWrite(leds[index],HIGH);
-					//Controller_send("unmute", index);
-					Serial.println("unmute");
-					LEDligh[index] = true;
-				}
-				digitalWrite(leds[index],LOW);
-				//Controller_send("mute", index);
-				Serial.println("mute");
-				LEDligh[index] = false;
-			}
-
-		}
-			//Serial.print("Entro en longClic de: ");
-			//Serial.println(index);
-			time = _millis;
-			analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
-			Serial.println("selVol");
-		}
 }
 
 void encoder_controll(){
 		if(shortClic[4] == true){
-			//Serial.println("------encoder_controll------");
+			Serial.println("------encoder_control   START------");
+			Serial.print("SelVolume channel: ");
 
-			for(int i=0; i<4; i++){
-				//shortClic[i] = false;
-				if(longClic[i]){
-					longClic[i] = false;
-					if(LEDligh[i])	digitalWrite(leds[i],HIGH);
-					else	digitalWrite(leds[i],LOW);
+			for(int i=0; i<numChannels; i++){
+				if(mode_channel_state[i]==2){
+					mode_channel_state_last[i]= 2;
+					mode_channel_state[i] = 0;
+					Serial.print(i);
+					Serial.print(",");
 				}
 			}
+			Serial.println("");
+			Serial.println("------encoder_control    END------");
+
 		}
+}
+
+void control_status_mode(int index){
+
+	if(mode_channel_state[index]!=mode_channel_state_last[index]){
+
+			if(mode_channel_state[index]==0){
+					digitalWrite(leds[index],HIGH);
+					//Controller_send("unmute", index);
+					Serial.print("unmute ch: ");
+					Serial.println(index);
+					LEDligh[index] = true;
+				}
+			else if (mode_channel_state[index]==1) {
+				digitalWrite(leds[index],LOW);
+				//Controller_send("mute", index);
+				Serial.print("mute ch: ");
+				Serial.println(index);
+				LEDligh[index] = false;
+			}
+
+		}
+		if(mode_channel_state[index]==2){
+			//Serial.print("Entro en longClic de: ");
+			//Serial.println(index);
+			time = _millis;
+			analogWrite(leds[index], 128+127*cos(2*PI/periode*time));           // sets the value (range from 0 to 255)
+			//Serial.println("selVol");
+		}
+		mode_channel_state_last[index] = mode_channel_state[index];
 }
 
 void reset_variables(int index){
