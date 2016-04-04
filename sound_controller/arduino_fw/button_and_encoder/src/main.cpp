@@ -62,6 +62,14 @@ void setup() {
 	attachInterrupt(0, rotEncoder, CHANGE);
 
 Serial.println("______________Sound Mixer v0.1___________________________________");
+
+Serial.println("");
+Serial.print("volume_channel: ");
+for(int j=0; j<5; j++){
+		Serial.print(volume_channel[j]);
+		Serial.print(",");
+}
+Serial.println("");
 }
 
 void rotEncoder(){
@@ -190,15 +198,23 @@ void encoder_controll(){
 				if(mode_channel_state[i]==2){
 					mode_channel_state_last[i]= 2;
 					mode_channel_state[i] = 0;
+					// COPIAR AQUI selVol en el array de volumenes de cada canal
+					volume_channel[i] = SelVol;
 					Serial.print(i);
 					Serial.print(",");
 				}
 			}
 			Serial.println("");
+			Serial.print("volume_channel: ");
+			for(int j=0; j<5; j++){
+					Serial.print(volume_channel[j]);
+					Serial.print(",");
+			}
+			Serial.println("");
+			Serial.println("");
 			Serial.println("------encoder_control    END------");
 
 			SelVol_state = false;
-			// COPIAR AQUI selVol en el array de volumenes de cada canal
 		}
 }
 
