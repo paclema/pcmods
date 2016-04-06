@@ -87,7 +87,8 @@ void loop() {
 	while(rotating) {
 		delay(2);
 
-		if(SelVol_state){
+		//if(SelVol_state){
+		if((mode_channel_state[0]==2)||(mode_channel_state[1]==2)||(mode_channel_state[2]==2)||(mode_channel_state[3]==2)||(mode_channel_state[4]==2)){
 			if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	SelVol = SelVol + encVolMultiply;
 			else	SelVol = SelVol - encVolMultiply;
 
@@ -183,7 +184,7 @@ void update_channel_mode(int index){
 		else	mode_channel_state[index]=0;
 	}
 	if(longClic[index]){
-		SelVol_state = true;
+		//SelVol_state = true;
 		mode_channel_state[index]=2;
 	}
 
