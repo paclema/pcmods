@@ -95,15 +95,15 @@ void loop() {
 			if(SelVol>=100) SelVol = 100;
 			else if(SelVol<=0) SelVol = 0;
 
-			Serial.print("SelVol: ");
-			Serial.println(SelVol);
+			//Serial.print("SelVol: ");
+			//Serial.println(SelVol);
 		}
 		else{
 			if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB))	encoder0Pos++;
 			else	encoder0Pos--;
 
-			Serial.print("encoder0Pos: ");
-			Serial.println(encoder0Pos);
+			//Serial.print("encoder0Pos: ");
+			//Serial.println(encoder0Pos);
 		}
 
 		rotating=false; // Reset the flag back to false
@@ -192,29 +192,21 @@ void update_channel_mode(int index){
 
 void encoder_controll(){
 		if(shortClic[4] == true){
-			Serial.println("------encoder_control   START------");
-			Serial.print("SelVolume channel: ");
-
 			for(int i=0; i<numChannels; i++){
 				if(mode_channel_state[i]==2){
 					mode_channel_state_last[i]= 2;
 					mode_channel_state[i] = 0;
 					// COPIAR AQUI selVol en el array de volumenes de cada canal
+					//en este estado hay algun canal en modo volume selec
 					volume_channel[i] = SelVol;
-					Serial.print(i);
-					Serial.print(",");
 				}
 			}
-			Serial.println("");
-			Serial.print("volume_channel: ");
+			Serial.print("ch_volume: ");
 			for(int j=0; j<5; j++){
 					Serial.print(volume_channel[j]);
-					Serial.print(",");
+					if (j!=4)Serial.print(",");
 			}
-			Serial.println("");
-			Serial.println("");
-			Serial.println("------encoder_control    END------");
-
+			Serial.println(";");
 			SelVol_state = false;
 		}
 }
@@ -226,15 +218,17 @@ void control_status_mode(int index){
 			if(mode_channel_state[index]==0){
 					digitalWrite(leds[index],HIGH);
 					//Controller_send("unmute", index);
-					Serial.print("unmute ch: ");
-					Serial.println(index);
+					Serial.print("ch:");
+					Serial.print(index);
+					Serial.println(",1;");
 					LEDligh[index] = true;
 				}
 			else if (mode_channel_state[index]==1) {
 				digitalWrite(leds[index],LOW);
 				//Controller_send("mute", index);
-				Serial.print("mute ch: ");
-				Serial.println(index);
+				Serial.print("ch:");
+				Serial.print(index);
+				Serial.println(",0;");
 				LEDligh[index] = false;
 			}
 
