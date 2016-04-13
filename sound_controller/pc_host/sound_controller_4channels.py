@@ -3,7 +3,7 @@ import warnings
 import serial
 import os
 
-arduino = serial.Serial('COM4', baudrate=115200, timeout=1.0)
+arduino = serial.Serial('COM3', baudrate=115200, timeout=1.0)
 arduino.setDTR(False)
 time.sleep(1)
 arduino.flushInput()
@@ -11,7 +11,8 @@ arduino.setDTR(True)
 
 #get volume from Channels
 
-channel_program = ["TeamSpeak 3 Client","Google Chrome","Origin","Telegram Desktop"]
+#channel_program = ["Google Chrome","Internet Explorer","TeamSpeak 3 Client","Origin","Telegram Desktop"]
+channel_program = ["Google Chrome","Internet Explorer","VLC media player","{0.0.0.00000000}.{606228fb-75ee-4290-8147-df477b420cb5}|#%b{F72273B5-40B8-426B-9D86-2DB0D45E87C9}|1%b#"]
 
 with arduino:
     while True:
@@ -34,9 +35,11 @@ with arduino:
                     #os.system("SHUTDOWN /S /T 10 ")
                     """
                     ch_volumes = list(text[1].split(","))
+                    print ch_volumes
 
-                    for i in channel_program
-                        os.system("SoundVolumeView.exe /SetVolume " + channel_program[i] + " " + ch_volumes[i])
+
+                    for i in range(3):
+                        os.system("SoundVolumeView.exe /SetVolume " + "\"" +channel_program[i] + "\"" + " " + ch_volumes[i])
 
 
                 continue
