@@ -4,3 +4,5 @@ telegram_bot/log.txt
 telegram_bot/id
 telegram_bot/config
 telegram_bot/snap_photo.jpg
+sound_controller/pc_host/SoundVolumeView.exe
+sound_controller/pc_host/SoundVolumeView.chm
