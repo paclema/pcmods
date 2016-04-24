@@ -1,4 +1,5 @@
 *.pyc
+*.fcstd1
 .idea
 telegram_bot/log.txt
 telegram_bot/id
