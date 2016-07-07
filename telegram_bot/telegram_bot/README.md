@@ -48,11 +48,11 @@ bot stdout.
 Just run the python script:
 
     $ python FlagBot.py
-    
+
 To lift the flag, send the following text to the Telegram bot in a Telegram chat:
 
     /flag up
-    
+
 To put the flag down again, send this command via Telegram:
 
     /flag down
@@ -60,3 +60,9 @@ To put the flag down again, send this command via Telegram:
 Dependencies :
 
 	sudo apt-get install python-pygame
+
+## Windows install ##
+
+  install python 2.7.11
+  pip install twx.botapi   https://pypi.python.org/pypi/twx.botapi
+  pip install pygame o http://www.pygame.org/download.shtml

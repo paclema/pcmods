@@ -39,11 +39,19 @@ def save_log(id, update_id, chat_id, text):
 ### Init configs #########################################
 arduino = None
 
+
 pygame.camera.init()
 pygame.mixer.init()
-#pygame.camera.list_camera() #Camera detected or not
-cam = pygame.camera.Camera("/dev/video0",(1280,1024))
-    
+
+if platform.system() == 'Windows' :
+    cameras = pygame.camera.list_cameras()
+
+    print "Using camera %s ..." % cameras[0]
+    cam = pygame.camera.Camera(cameras[0])
+else:
+    #pygame.camera.list_camera() #Camera detected or not
+    cam = pygame.camera.Camera("/dev/video0",(1280,1024))
+
 ### JukeBot things #######################################
 def send_keyboard(bot, user_id):
     keyboard_layout = [['/flag'], ['/rainbow'], ['/foto'] ]
@@ -60,7 +68,7 @@ def get_user_name(user, show_last_name = 0, show_all_info = 0):
             if (user.last_name != None) and show_last_name == True: name += " " + user.last_name
     else:
         if (user.first_name != None): name = user.first_name
-        else: 
+        else:
             name = "No name"
         if (user.last_name != None): name += " " + user.last_name
         if (user.username != None): name += " " + user.username
@@ -96,10 +104,10 @@ def main():
 
     # Connect to hardware
     interface = SerialInterface()
-    if platform.system() == 'Windows' : 
-        interface.connect('COM5', 19200)
+    if platform.system() == 'Windows' :
+        interface.connect('COM4', 19200)
     else:
-        interface.connect('/dev/ttyUSB0', 19200)        
+        interface.connect('/dev/ttyUSB0', 19200)
 
     # Send special keyboard:
     send_keyboard(bot, user_id)
@@ -114,7 +122,7 @@ def main():
 
 
             for update in updates:
-                
+
                 id = update.message.message_id
                 update_id = update.update_id
                 user = update.message.sender
@@ -132,7 +140,7 @@ def main():
                         words = text.split()
 
                         for i, word in enumerate(words):
-                            # Process commands:                     
+                            # Process commands:
                             if word == '/start':
                                 print "New user started the app: " + str(user)
                                 send_keyboard(bot, chat_id)
@@ -154,8 +162,13 @@ def main():
                                 interface.sendStripColor(0,0,0)
                                 cam.start()
                                 bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
-                                
-                                img = cam.get_image()
+
+                                if platform.system() == 'Windows' :
+                                    img = pygame.Surface((640,480))
+                                    cam.get_image(img)
+                                else:
+                                    img = cam.get_image()
+
                                 pygame.image.save(img,"./snap_photo.jpg")
                                 pygame.mixer.music.load("./camera_shutter.mp3")
                                 interface.sendStripColor(255,255,255)
