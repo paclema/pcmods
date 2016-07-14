@@ -17,23 +17,23 @@ FlagBot requires:
 
 The board and the servo are connected as follows:
 <p align="center">
-<img src="doc/Circuit.png" width="70%">
+<img src="/doc/Circuit.png" width="70%">
 </p>  
 
 The firmware for the Arduino board is provided, and can be found in the FlagBot/Arduino folder of this repository.
 
 In order to hold the Arduino board and the servo together, a 3D printable holder can be found in the FlagBot/Hardware folder:
 <p align="center">
-<img src="doc/Holder.png" width="70%">
+<img src="/doc/Holder.png" width="70%">
 </p>  
 
 This is the final result:
 <p align="center">
-<img src="doc/Assembly.jpg" width="70%">
+<img src="/doc/Assembly.jpg" width="70%">
 </p>  
 
 <p align="center">
-<img src="doc/Assembly-2.jpg" width="70%">
+<img src="/doc/Assembly-2.jpg" width="70%">
 </p>  
 ## Configuration ##
 For the bot to work properly, the configuration file provided has to be modified with your bot's token and user
@@ -47,7 +47,7 @@ bot stdout.
 ## Usage ##
 Just run the python script:
 
-    $ python FlagBot.py
+      $ python FlagBot.py
 
 To lift the flag, send the following text to the Telegram bot in a Telegram chat:
 
@@ -66,3 +66,17 @@ Dependencies :
   install python 2.7.11
   pip install twx.botapi   https://pypi.python.org/pypi/twx.botapi
   pip install pygame o http://www.pygame.org/download.shtml
+
+
+  If you have the next error:
+
+      Traceback (most recent call last):
+      File "FlagBot.py", line 43, in <module>
+      pygame.camera.init()
+      File "C:\Python27\lib\site-packages\pygame\camera.py", line 67, in init
+      camera_vidcapture.init()
+      File "C:\Python27\lib\site-packages\pygame\_camera_vidcapture.py", line 21, in init
+      import vidcap as vc
+      ImportError: No module named vidcap
+
+download the vadcap from http://videocapture.sourceforge.net/

@@ -17,7 +17,8 @@ import platform
 import pygame
 import pygame.camera
 
-__author__ = 'def'
+__author__ = 'paclema'
+__licence__ = "GPLv3"
 
 ### Basic bot things ####################################
 def load_last_id():
@@ -46,6 +47,7 @@ pygame.mixer.init()
 if platform.system() == 'Windows' :
     cameras = pygame.camera.list_cameras()
 
+    print cameras
     print "Using camera %s ..." % cameras[0]
     cam = pygame.camera.Camera(cameras[0])
 else:
@@ -105,7 +107,7 @@ def main():
     # Connect to hardware
     interface = SerialInterface()
     if platform.system() == 'Windows' :
-        interface.connect('COM4', 19200)
+        interface.connect('COM3', 19200)
     else:
         interface.connect('/dev/ttyUSB0', 19200)
 
@@ -118,87 +120,97 @@ def main():
         try:
             updates = bot.get_updates(offset=last_id).wait()
             #print updates[0].message.sender
+            #print updates[0].message.message_id
             #print "-------------------------------"
 
-
+            itera = 0
             for update in updates:
 
-                id = update.message.message_id
-                update_id = update.update_id
-                user = update.message.sender
+                #print len(update.message)
+                if update.message is not None:
 
-                chat_id = update.message.chat.id
-                text = update.message.text
+                    #print update.message.text
+                    #print "*************************** iteration: "
 
-                if int(update_id) > last_id:
-                    last_id = update_id
-                    save_last_id(last_id)
-                    save_log(id, update_id, chat_id, text)
+                    id = update.message.message_id
+                    update_id = update.update_id
+                    user = update.message.sender
 
-                    #text = regex.sub('', text)
-                    if text:
-                        words = text.split()
+                    chat_id = update.message.chat.id
+                    text = update.message.text
 
-                        for i, word in enumerate(words):
-                            # Process commands:
-                            if word == '/start':
-                                print "New user started the app: " + str(user)
-                                send_keyboard(bot, chat_id)
-                            elif word == '/flag':
-                                if update.message.sender.username  == 'paclema' : interface.sendFlagWave(1)
-                                bot.send_message(chat_id, "Moviendo la bandera " + get_user_name(update.message.sender) + "!")
-                            elif word == '/rainbow':
-                                interface.sendRainbow()
-                                break
-                            elif word == '/foto':
-                                #interface.sendFlagWave(1)
-                                interface.sendStripColor(0,0,0)
-                                for a in range(30):
-                                    interface.sendStripBarColor(0, 2*a, 8.5*a, 0, 0)
-                                    t.sleep(0.03)
+                    if int(update_id) > last_id:
+                        last_id = update_id
+                        save_last_id(last_id)
+                        save_log(id, update_id, chat_id, text)
 
-                                interface.sendStripColor(0,0,0)
-                                t.sleep(0.2)
-                                interface.sendStripColor(0,0,0)
-                                cam.start()
-                                bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
+                        #text = regex.sub('', text)
+                        if text:
+                            words = text.split()
 
-                                if platform.system() == 'Windows' :
-                                    img = pygame.Surface((640,480))
-                                    cam.get_image(img)
+                            for i, word in enumerate(words):
+
+                                print word
+
+                                # Process commands:
+                                if word == '/start':
+                                    print "New user started the app: " + str(user)
+                                    send_keyboard(bot, chat_id)
+                                elif word == '/flag':
+                                    if update.message.sender.username  == 'paclema' : interface.sendFlagWave(1)
+                                    bot.send_message(chat_id, "Moviendo la bandera " + get_user_name(update.message.sender) + "!")
+                                elif word == '/rainbow':
+                                    interface.sendRainbow()
+                                    break
+                                elif word == '/foto':
+                                    #interface.sendFlagWave(1)
+                                    interface.sendStripColor(0,0,0)
+                                    for a in range(30):
+                                        interface.sendStripBarColor(0, 2*a, 8.5*a, 0, 0)
+                                        t.sleep(0.03)
+
+                                    interface.sendStripColor(0,0,0)
+                                    t.sleep(0.2)
+                                    interface.sendStripColor(0,0,0)
+                                    cam.start()
+                                    bot.send_message(chat_id, get_user_name(update.message.sender) + " quiere una foto!")
+
+                                    if platform.system() == 'Windows' :
+                                        img = pygame.Surface((640,480))
+                                        cam.get_image(img)
+                                    else:
+                                        img = cam.get_image()
+
+                                    pygame.image.save(img,"./snap_photo.jpg")
+                                    pygame.mixer.music.load("./camera_shutter.mp3")
+                                    interface.sendStripColor(255,255,255)
+                                    pygame.mixer.music.play()
+
+                                    fp = open('snap_photo.jpg', 'rb')
+                                    file_info = InputFileInfo('snap_photo.jpg', fp, 'image/jpg')
+
+                                    f = InputFile('photo', file_info)
+
+                                    bot.send_photo(chat_id, photo=f)
+
+                                    cam.stop()
+                                    print "[" + t.strftime("%c") + "]" + " Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
+                                    t.sleep(0.3)
+                                    interface.sendStripColor(0,0,0)
+
+                                    break
                                 else:
-                                    img = cam.get_image()
+                                    bot.send_message(chat_id, "Bad syntax!")
+                                    break
 
-                                pygame.image.save(img,"./snap_photo.jpg")
-                                pygame.mixer.music.load("./camera_shutter.mp3")
-                                interface.sendStripColor(255,255,255)
-                                pygame.mixer.music.play()
-
-                                fp = open('snap_photo.jpg', 'rb')
-                                file_info = InputFileInfo('snap_photo.jpg', fp, 'image/jpg')
-
-                                f = InputFile('photo', file_info)
-
-                                bot.send_photo(chat_id, photo=f)
-
-                                cam.stop()
-                                print "[" + t.strftime("%c") + "]" + " Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
-                                t.sleep(0.3)
-                                interface.sendStripColor(0,0,0)
-
-                                break
-                            else:
-                                bot.send_message(chat_id, "Bad syntax!")
-                                break
-
-                            # Restricted API
-                            if int(user_id) == user.id:
-                                if word == '/move':
-                                    try:
-                                        interface.sendMove(int(words[i+1]))
-                                        break
-                                    except Exception, e:
-                                        print e
+                                # Restricted API
+                                if int(user_id) == user.id:
+                                    if word == '/move':
+                                        try:
+                                            interface.sendMove(int(words[i+1]))
+                                            break
+                                        except Exception, e:
+                                            print e
 
 
         except (KeyboardInterrupt, SystemExit):
