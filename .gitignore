@@ -1,8 +1,8 @@
 *.pyc
 *.fcstd1
 .idea
-telegram_bot/log.txt
-telegram_bot/id
-telegram_bot/config
-telegram_bot/snap_photo.jpg
+telegram_bot/FlagBot/telegram_bot/log.txt
+telegram_bot/FlagBot/telegram_bot/id
+telegram_bot/FlagBot/telegram_bot/config
+telegram_bot/FlagBot/telegram_bot/snap_photo.jpg
 sound_controller/pc_host/SoundVolumeView.*
