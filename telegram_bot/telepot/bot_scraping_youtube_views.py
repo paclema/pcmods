@@ -6,7 +6,7 @@ import sys
 import time
 import telepot
 
-url = "http://www.youtube.com/watch?v=QtXby3twMmI"
+#url = "http://www.youtube.com/watch?v=QtXby3twMmI"
 
 numero_view = 0
 
@@ -23,6 +23,7 @@ def handle(msg):
         bot.sendMessage(chat_id, "Sayonara baby")
 
 TOKEN = sys.argv[1]  # get token from command-line
+url_video = sys.argv[2]  # get token from command-line
 
 bot = telepot.Bot(TOKEN)
 bot.message_loop(handle)
@@ -30,7 +31,7 @@ print ('Listening ...')
 
 # Keep the program running.
 while 1:
-    req = requests.get(url)
+    req = requests.get(url_video)
     statusCode = req.status_code
 
     if statusCode == 200:
