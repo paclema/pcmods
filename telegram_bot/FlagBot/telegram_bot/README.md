@@ -64,7 +64,9 @@ Dependencies :
 ## Windows install ##
 
   install python 2.7.11
+
   pip install twx.botapi   https://pypi.python.org/pypi/twx.botapi
+  
   pip install pygame o http://www.pygame.org/download.shtml
 
 

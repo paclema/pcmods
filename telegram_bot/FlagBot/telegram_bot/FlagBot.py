@@ -52,7 +52,7 @@ if platform.system() == 'Windows' :
     cam = pygame.camera.Camera(cameras[0])
 else:
     #pygame.camera.list_camera() #Camera detected or not
-    cam = pygame.camera.Camera("/dev/video0",(1280,1024))
+    cam = pygame.camera.Camera("/dev/video1",(1280,1024))
 
 ### JukeBot things #######################################
 def send_keyboard(bot, user_id):
