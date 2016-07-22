@@ -79,6 +79,16 @@ class SerialInterface:
         except AttributeError, e:
             print 'Not connected: [' + str(e) + ']'
 
+    def sendMove(self, deg):
+        """
+        Sends the command to move flag to some degrees as SERVO:180;;
+        """
+        command = "SERVO:%d;\n" % (deg)
+
+        try:
+            self.serialPort.write(command)
+        except AttributeError, e:
+            print 'Not connected: [' + str(e) + ']'
 # If the script is run directly, this example is executed:
 if __name__ == "__main__":
     import time as t

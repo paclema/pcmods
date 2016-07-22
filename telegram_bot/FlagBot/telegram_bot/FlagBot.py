@@ -56,7 +56,8 @@ else:
 
 ### JukeBot things #######################################
 def send_keyboard(bot, user_id):
-    keyboard_layout = [['/flag'], ['/rainbow'], ['/foto'] ]
+    keyboard_layout = [['/flag','/move 10'],
+                        ['/rainbow','/foto']]
     reply_markup = ReplyKeyboardMarkup.create(keyboard_layout)
     bot.send_message(user_id, 'This is the almighty FlagBot for Euskal Encounter 23!\nWelcome, mortal', reply_markup=reply_markup)
 
@@ -157,12 +158,21 @@ def main():
                                     print "New user started the app: " + str(user)
                                     send_keyboard(bot, chat_id)
                                 elif word == '/flag':
-                                    if update.message.sender.username  == 'paclema' : interface.sendFlagWave(1)
+                                    #if update.message.sender.username  == 'paclema' : interface.sendFlagWave(1)
+                                    interface.sendFlagWave(1)
                                     bot.send_message(chat_id, "Moviendo la bandera " + get_user_name(update.message.sender) + "!")
                                 elif word == '/rainbow':
                                     interface.sendRainbow()
                                     break
+                                elif word == '/move':
+                                    try:
+                                        interface.sendMove(int(words[i+1]))
+                                        break
+                                    except Exception, e:
+                                        print e
+                                    break
                                 elif word == '/foto':
+
                                     #interface.sendFlagWave(1)
                                     interface.sendStripColor(0,0,0)
                                     for a in range(30):
@@ -191,19 +201,22 @@ def main():
 
                                     f = InputFile('photo', file_info)
 
-                                    bot.send_photo(chat_id, photo=f)
+                                    if update.message.sender.username  == 'paclema' :
+                                        bot.send_photo(chat_id, photo=f)
 
                                     cam.stop()
+                                    bot.send_message(chat_id," Pero paclema no quiere que le veas, sorry :P")
                                     print "[" + t.strftime("%c") + "]" + " Foto enviada de " + get_user_name(update.message.sender, True, True) + "!"
                                     t.sleep(0.3)
                                     interface.sendStripColor(0,0,0)
 
                                     break
                                 else:
-                                    bot.send_message(chat_id, "Bad syntax!")
+                                    bot.send_message(chat_id, "No entiendo lo que me cuentas!")
                                     break
 
                                 # Restricted API
+                                """
                                 if int(user_id) == user.id:
                                     if word == '/move':
                                         try:
@@ -211,6 +224,7 @@ def main():
                                             break
                                         except Exception, e:
                                             print e
+                                """
 
 
         except (KeyboardInterrupt, SystemExit):
