@@ -51,9 +51,9 @@ def scrap_page(msg):
                 if link['class'][0].encode('utf8') == 'tablaestado':
                     teststring = unicode("U0001f6ab", 'ascii').encode('unicode_escape')
 
-                    bot.sendMessage(chat_id, link.attrs['title'] + ": " + link.string + teststring)
+                    bot.sendMessage(chat_id, link.attrs['title'] + ": " + link.string) # + teststring)
                     #\u2705\U0001f6ab
-                    
+
     # <a href="http://www.infonieve.es/estacion-esqui/la-pinilla/29/" class="tablaestado redondeado" style="background-color:#FA8574;" title="Estación de Esquí de La Pinilla">Cerrada</a>
     #<a class="tablaestado redondeado" href="http://www.infonieve.es/estacion-esqui/la-pinilla/29/" style="background-color:#FA8574;" title="Estaci├│n de Esqu├¡ de La Pinilla">Cerrada</a>
 
