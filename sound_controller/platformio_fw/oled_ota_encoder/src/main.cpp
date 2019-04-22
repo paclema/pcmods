@@ -153,8 +153,9 @@ long timeSinceLastModeSwitch = 0;
 
 void handleKey() {
   isButtonPressed = true;
-  myEnc.write(0);
-  newMode = 0;
+  //myEnc.write(0);
+  //newMode = 0;
+  Serial.println("Pressed!");
 }
 
 
@@ -188,8 +189,8 @@ void setup() {
 
   //Configure encoder:
 
-  pinMode(D6, INPUT_PULLUP);
-  attachInterrupt(D6, handleKey, RISING);
+  pinMode(D7, INPUT_PULLUP);
+  attachInterrupt(D7, handleKey, RISING);
 
 }
 
@@ -201,9 +202,9 @@ void loop() {
   if (newPosition != oldPosition) {
         oldPosition = newPosition;
 
-        if (newPosition >= 20){
-          newPosition = 20;
-          myEnc.write(20);
+        if (newPosition >= 40){
+          newPosition = 40;
+          myEnc.write(40);
         }
         if (newPosition <= 0){
           newPosition = 0;
