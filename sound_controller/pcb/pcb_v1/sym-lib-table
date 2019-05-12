@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name IoLed)(type Legacy)(uri C:/Users/pacle/Desktop/repos_windows/pcmods/sound_controller/pcb/pcb_v1/IoLed.lib)(options "")(descr ""))
+)
