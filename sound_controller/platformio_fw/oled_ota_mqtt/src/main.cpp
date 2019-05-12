@@ -124,6 +124,18 @@ void setup() {
   delay(300);
   print_heap_memory();
 
+  display.init();
+  display.flipScreenVertically();
+  display.setContrast(255);
+  // Align text vertical/horizontal center
+  // display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+  // display.setFont(ArialMT_Plain_10);
+  // display.drawString(display.getWidth()/2, display.getHeight()/2, "Ready for OTA:\n" + WiFi.localIP().toString());
+  // display.display();
+
+  dp2.print(&display, "Connecting...");
+  delay(200);
+  dp2.print_connecting(&display);
   // Init SPIFFS file storage:
   if (!SPIFFS.begin()) {
     Serial.println("Failed to mount file system");
@@ -200,18 +212,10 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  display.init();
-  display.flipScreenVertically();
-  display.setContrast(255);
-
-
+  // Init OTA manager after being connected
   ota.init(&display);
   dp2.init(&display);
-  // Align text vertical/horizontal center
-  // display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
-  // display.setFont(ArialMT_Plain_10);
-  // display.drawString(display.getWidth()/2, display.getHeight()/2, "Ready for OTA:\n" + WiFi.localIP().toString());
-  // display.display();
+
 }
 
 void loop() {
