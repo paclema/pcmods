@@ -87,13 +87,24 @@ int value = 0;
 
 void reconnect() {
   // Loop until we're reconnected
+
+  String clientName = "iot-test";
+  Serial.print("---MQTT: clientName:");
+  Serial.print(clientName.c_str());
+  Serial.print(" mqtt_username:");
+  Serial.print(mqtt_username);
+  Serial.print(" mqtt_password:");
+  Serial.print(mqtt_password);
+  Serial.println(" ");
+
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect(clientName, mqtt_username, mqtt_password)) {
+    // if (client.connect(clientName.c_str(), mqtt_username, mqtt_password)) {
+    if (client.connect(clientName.c_str())) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world");
+      //client.publish("outTopic", "hello world");
       // ... and resubscribe
       client.subscribe("#");
 
@@ -136,6 +147,10 @@ void setup() {
   dp2.print(&display, "Connecting...");
   delay(200);
   dp2.print_connecting(&display);
+
+  delay(2000);
+
+
   // Init SPIFFS file storage:
   if (!SPIFFS.begin()) {
     Serial.println("Failed to mount file system");
@@ -151,32 +166,32 @@ void setup() {
           Serial.println(f.size());
       }
   }
-  // Load certificate file:
-  // But you must convert it to .der
-  // openssl x509 -in ./certs/IoLed_controller/client.crt -out ./certs/IoLed_controller/cert.der -outform DER
-  File cert = SPIFFS.open("/cert.der", "r"); //replace cert.crt with your uploaded file name
-  if (!cert) Serial.println("Failed to open cert file");
-  else Serial.println("Success to open cert file");
-  //delay(1000);
-  if (espClient.loadCertificate(cert)) Serial.println("cert loaded");
-  else Serial.println("cert not loaded");
-  // Load private key:
-  // But you must convert it to .der
-  // openssl rsa -in ./certs/IoLed_controller/client.key -out ./certs/IoLed_controller/private.der -outform DER
-  File private_key = SPIFFS.open("/private.der", "r");
-  if (!private_key) Serial.println("Failed to open key file");
-  else Serial.println("Success to open key file");
-  //delay(1000);
-  if (espClient.loadPrivateKey(private_key)) Serial.println("key loaded");
-  else Serial.println("key not loaded");
-
-  // Load CA file:
-  File ca = SPIFFS.open("/ca.crt", "r");
-  if (!ca) Serial.println("Failed to open CA file");
-  else Serial.println("Success to open CA file");
-  //delay(1000);
-  if (espClient.loadCACert(ca)) Serial.println("CA loaded");
-  else Serial.println("CA not loaded");
+  // // Load certificate file:
+  // // But you must convert it to .der
+  // // openssl x509 -in ./certs/IoLed_controller/client.crt -out ./certs/IoLed_controller/cert.der -outform DER
+  // File cert = SPIFFS.open("/cert.der", "r"); //replace cert.crt with your uploaded file name
+  // if (!cert) Serial.println("Failed to open cert file");
+  // else Serial.println("Success to open cert file");
+  // delay(1000);
+  // if (espClient.loadCertificate(cert)) Serial.println("cert loaded");
+  // else Serial.println("cert not loaded");
+  // // Load private key:
+  // // But you must convert it to .der
+  // // openssl rsa -in ./certs/IoLed_controller/client.key -out ./certs/IoLed_controller/private.der -outform DER
+  // File private_key = SPIFFS.open("/private.der", "r");
+  // if (!private_key) Serial.println("Failed to open key file");
+  // else Serial.println("Success to open key file");
+  // delay(1000);
+  // if (espClient.loadPrivateKey(private_key)) Serial.println("key loaded");
+  // else Serial.println("key not loaded");
+  //
+  // // Load CA file:
+  // File ca = SPIFFS.open("/ca.crt", "r");
+  // if (!ca) Serial.println("Failed to open CA file");
+  // else Serial.println("Success to open CA file");
+  // delay(1000);
+  // if (espClient.loadCACert(ca)) Serial.println("CA loaded");
+  // else Serial.println("CA not loaded");
 
 
   // Print some info:
@@ -200,11 +215,50 @@ void setup() {
 
 
   // Init wifi:
+    // config static IP
+  // IPAddress ip(192, 168, 1, 242); // where xx is the desired IP Address
+  // IPAddress gateway(192, 168, 1, 1); // set gateway to match your network
+  // Serial.print(F("Setting static ip to : "));
+  // Serial.println(ip);
+  // IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
+  // WiFi.config(ip, gateway, subnet);
+
   WiFi.begin ( ssid, password );
   // Wait for connection
-  while ( WiFi.status() != WL_CONNECTED ) {
-    delay ( 10 );
-  }
+  // while ( WiFi.status() != WL_CONNECTED ) {
+  //   delay ( 10 );
+  // }
+  // // int counter = 0;
+  // // int id=0;
+  // while ( WiFi.status() != WL_CONNECTED ) {
+  //   delay (500);
+  //
+  //   display.clear();
+  //   display.flipScreenVertically();
+  //   display.drawString(64, 10, "Conectando al WiFi");
+  //   if (counter % 2 == 0) {
+  //     id=0;
+  //     // char string[10];
+  //     // dtostrf(var1,3,0,string);
+  //     // display.drawString(24, 10, activeSymbol+string);
+  //     // display.drawXbm(46, 30, 8, 8, activeSymbol+string);
+  //     display.drawXbm(46, 30, 8, 8, wifiLoadingBitmap [0]);
+  //   } else {
+  //     id=0;
+  //     // char string[10];
+  //     // dtostrf(var1,3,0,string);
+  //     // display.drawString(24, 10, activeSymbol+string);
+  //     // display.drawXbm(46, 30, 8, 8, inactiveSymbol+string);
+  //     display.drawXbm(46, 30, 8, 8, wifiLoadingBitmap [1]);
+  //
+  //   }
+  //   // display.drawXbm(46, 30, 8, 8, counter % 3 == 0 ? activeSymbol : inactiveSymbol);
+  //   // display.drawXbm(60, 30, 8, 8, counter % 3 == 1 ? activeSymbol : inactiveSymbol);
+  //   // display.drawXbm(74, 30, 8, 8, counter % 3 == 2 ? activeSymbol : inactiveSymbol);
+  //   display.display();
+  //
+  //   counter++;
+  // }
 
 
   Serial.println("");
@@ -212,9 +266,13 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
+  delay(5000);
+
   // Init OTA manager after being connected
   ota.init(&display);
   dp2.init(&display);
+
+  reconnect();
 
 }
 
@@ -228,16 +286,16 @@ void loop() {
   client.loop();
 
   // Publish msg to mqtt
-  // long now = millis();
-  // if (now - lastMsg > 2000) {
-  //   lastMsg = now;
-  //   ++value;
-  //   snprintf (msg, 75, "hello world #%ld", value);
-  //   Serial.print("Publish message: ");
-  //   Serial.println(msg);
-  //   client.publish("outTopic", msg);
-  //   Serial.print("Heap: "); Serial.println(ESP.getFreeHeap()); //Low heap can cause problems
-  // }
+  long now = millis();
+  if (now - lastMsg > 2000) {
+    lastMsg = now;
+    ++value;
+    snprintf (msg, 75, "hello world #%ld", value);
+    Serial.print("Publish message: ");
+    Serial.println(msg);
+    client.publish("outTopic", msg);
+    Serial.print("Heap: "); Serial.println(ESP.getFreeHeap()); //Low heap can cause problems
+  }
 
 
 }
